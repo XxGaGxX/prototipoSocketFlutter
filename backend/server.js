@@ -1,25 +1,25 @@
-var express = require("express")
-var app = express();
-const bodyParser = require('body-parser');
-var port = 3000
+const express = require("express")
+const http = require("http")
+const socketIo = require("socket.io")
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-
-// app.post('/', (req, res) => {
-//     console.log(req.body) //visualizza il json su terminale
-// })
-
-app.listen(port, () => {
-    console.log("Ascolto sulla porta " + port)
+const app = express(); // 
+const server = http.createServer(app) // crea un server 
+const io = socketIo(server, {
+  cors :{
+    origin: '*'
+  }
 });
 
-app.post("/submit", (req, res) => {
-  console.log(req.body);
-  const response = {    //creo il messaggio risposta che verra inviato al client quando quest'ultimo invierà qualcosa
-    message: "Messaggio ricevuto",
-    status: "success",
-    data: req.body,
-  };
-  res.json(response);
-});
+io.on("connection", socket =>{  //quando avviene la connessione con il client :
+  console.log('Client connesso')
+
+  socket.on('sendMessage', (data) => { //quando il client manda un messaggio al server
+    console.log('Messaggio ripetuto: ' + data)
+    io.emit('message', data) //mando un messaggio al client
+  })
+})
+
+const PORT = process.env.PORT || 3000; // utilizzo la porta 3000 di deafault, se è occupata usa quella che usava prima
+server.listen(PORT, "10.1.0.9", ()=>{ 
+  console.log("Server in ascolto alla porta: " + PORT)
+})
