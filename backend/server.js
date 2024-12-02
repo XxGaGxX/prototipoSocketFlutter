@@ -7,6 +7,7 @@ const server = http.createServer(app) // crea un server
 const io = socketIo(server, {
   cors :{
     origin: '*'
+    
   }
 });
 
