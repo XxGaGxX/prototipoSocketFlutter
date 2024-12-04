@@ -1,6 +1,6 @@
 import 'dart:async';
 // ignore: library_prefixes
-import 'package:socket_io_client/socket_io_client.dart' as IO; 
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
 
   // This widget is the root of your application.
   @override
-  
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
@@ -60,26 +59,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
     //connessione al socket
-    socket = IO.io("http://10.1.0.9:3000", <String,dynamic>{
-      'transports' : ['websocket']
+    socket = IO.io("http://192.168.1.122:4500", <String, dynamic>{
+      'transports': ['websocket']
     });
     //Apertura della socket
-    socket.on("connect", (_){ 
+    socket.on("connect", (_) {
       setState(() {
         errorMessage = "connesso al server";
       });
     });
     //Listen per invio dei messaggi
-    socket.on("message", (data){
+    socket.on("message", (data) {
       _streamController.add(data);
     });
   }
 
   @override
-  void Dispose(){
+  void Dispose() {
     socket.disconnect();
     _controller.dispose();
     _streamController.close();
@@ -94,68 +93,57 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-               SizedBox(
+              SizedBox(
                 width: 300,
                 height: 65,
                 child: TextField(
                   onChanged: (value) {
-                    if(socket.connected){
+                    if (socket.connected) {
                       sendMessage(value);
                     }
                   },
                   controller: _controller,
                   decoration: const InputDecoration(
-                    labelText: "Inserisci il messaggio",
-                    border: OutlineInputBorder()
-                  ),
+                      labelText: "Inserisci il messaggio",
+                      border: OutlineInputBorder()),
                 ),
               ),
-              const SizedBox(height: 20,),
-              StreamBuilder <String> (
-                stream: messagesStream, 
-                builder: (context,snapshot) {
-                  if(snapshot.hasError){
-                    return Text('Error: ${snapshot.error}');
-                  }
-                  if(errorMessage.isNotEmpty){
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        errorMessage,
-                        style: const TextStyle(color: Colors.red),
-                      ),
+              const SizedBox(
+                height: 20,
+              ),
+              StreamBuilder<String>(
+                  stream: messagesStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    if (errorMessage.isNotEmpty) {
+                      Text(errorMessage);
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      child: ListTile(
+                          title: Text(
+                              "messaggio ricevuto: ${snapshot.data ?? ""}")),
                     );
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: ListTile(
-                      title: Text("messaggio ricevuto: ${snapshot.data ?? ""}")
-                    ),
-                  );
-                  
-                }
-                
-              )
+                  })
               // )
             ],
-        ),
-      ) // This trailing comma makes auto-formatting nicer for build methods.
-    );
+          ),
+        ) // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
-  
-  void sendMessage(String value) {
-    socket.emit(value);
 
+  void sendMessage(String value) {
+    socket.emit('', value);
   }
 }

@@ -10,16 +10,20 @@ const io = socketIo(server, {
   },
 });
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   console.log("Client connesso");
 
   socket.on("sendMessage", (data) => {
-    console.log("Messaggio ripetuto: " + data);
+    console.log(data);
     io.emit("message", data); // Send message to all connected clients
+  });
+
+  socket.on('disconnection', () => { 
+    console
   });
 });
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, "0.0.0.0", () => {
+const PORT = process.env.PORT || 4500;
+server.listen(PORT, '192.168.1.122', () => {
   console.log("Server in ascolto alla porta: " + PORT);
 });
