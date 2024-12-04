@@ -1,26 +1,25 @@
-const express = require("express")
-const http = require("http")
-const socketIo = require("socket.io")
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
 
-const app = express(); // 
-const server = http.createServer(app) // crea un server 
+const app = express();
+const server = http.createServer(app);
 const io = socketIo(server, {
-  cors :{
-    origin: '*'
-  }
+  cors: {
+    origin: "*", // Allow all origins
+  },
 });
 
-io.on("connection", socket =>{  //quando avviene la connessione con il client :
-  console.log('Client connesso')
+io.on("connection", (socket) => {
+  console.log("Client connesso");
 
-  
-  socket.on('sendMessage', (data) => { //quando il client manda un messaggio al server
-    console.log('Messaggio ripetuto: ' + data)
-    io.emit('message', data) //mando un messaggio al client
-  })
-})
+  socket.on("sendMessage", (data) => {
+    console.log("Messaggio ripetuto: " + data);
+    io.emit("message", data); // Send message to all connected clients
+  });
+});
 
-const PORT = process.env.PORT || 3000; // utilizzo la porta 3000 di default, se è occupata usa quella che usava prima
-server.listen(PORT, "10.1.0.9", ()=>{ 
-  console.log("Server in ascolto alla porta: " + PORT)
-})
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, "0.0.0.0", () => {
+  console.log("Server in ascolto alla porta: " + PORT);
+});
