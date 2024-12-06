@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     //connessione al socket
-    socket = IO.io("http://192.168.1.122:4500", <String, dynamic>{
+    socket = IO.io("http://192.168.1.118:4500", <String, dynamic>{
       'transports': ['websocket']
     });
     //Apertura della socket

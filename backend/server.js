@@ -24,6 +24,6 @@ io.on("connection", socket => {
 });
 
 const PORT = process.env.PORT || 4500;
-server.listen(PORT, '192.168.1.122', () => {
+server.listen(PORT, "192.168.1.118", () => {
   console.log("Server in ascolto alla porta: " + PORT);
 });
